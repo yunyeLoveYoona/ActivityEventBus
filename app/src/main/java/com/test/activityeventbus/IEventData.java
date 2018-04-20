@@ -5,4 +5,11 @@ package com.test.activityeventbus;
  */
 
 public interface IEventData {
+
+    /**
+     * 事件id
+     *
+     * @return
+     */
+    public int getEventId();
 }

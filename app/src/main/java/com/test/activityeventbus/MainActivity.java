@@ -16,6 +16,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ActivityEventBus.getInstance().addEvent(TestActivity.class.getName(), new IEventData() {
+                    @Override
+                    public int getEventId() {
+                        return 0;
+                    }
+                });
+                ActivityEventBus.getInstance().addEvent(TestActivity.class.getName(), new IEventData() {
+                    @Override
+                    public int getEventId() {
+                        return 1;
+                    }
                 });
                 Intent intent = new Intent(MainActivity.this, TestActivity.class);
                 startActivity(intent);
@@ -24,6 +34,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEvent(IEventData iEventData) {
-        Toast.makeText(MainActivity.this, "接到事件", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "接到事件" + iEventData.getEventId(), Toast.LENGTH_SHORT).show();
     }
 }

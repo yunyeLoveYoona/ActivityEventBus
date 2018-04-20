@@ -16,6 +16,16 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ActivityEventBus.getInstance().addEvent(MainActivity.class.getName(), new IEventData() {
+                    @Override
+                    public int getEventId() {
+                        return 0;
+                    }
+                });
+                ActivityEventBus.getInstance().addEvent(MainActivity.class.getName(), new IEventData() {
+                    @Override
+                    public int getEventId() {
+                        return 1;
+                    }
                 });
                 finish();
             }
@@ -23,6 +33,6 @@ public class TestActivity extends AppCompatActivity {
     }
 
     public void onEvent(IEventData iEventData) {
-        Toast.makeText(TestActivity.this, "接到事件", Toast.LENGTH_SHORT).show();
+        Toast.makeText(TestActivity.this, "接到事件" + iEventData.getEventId(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -14,10 +16,10 @@ import java.util.HashMap;
 
 public class ActivityEventBus implements Application.ActivityLifecycleCallbacks {
     private static ActivityEventBus instance;
-    private HashMap<String, IEventData> eventMap;
+    private HashMap<String, ArrayList<IEventData>> eventMap;
 
     public ActivityEventBus() {
-        eventMap = new HashMap<String, IEventData>();
+        eventMap = new HashMap<String, ArrayList<IEventData>>();
     }
 
     public static ActivityEventBus getInstance() {
@@ -38,7 +40,9 @@ public class ActivityEventBus implements Application.ActivityLifecycleCallbacks 
             Method method = null;
             try {
                 method = activity.getClass().getMethod("onEvent", IEventData.class);
-                method.invoke(activity, eventMap.get(activity.getClass().getName()));
+                for (IEventData eventData : eventMap.get(activity.getClass().getName())) {
+                    method.invoke(activity, eventData);
+                }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -77,7 +81,14 @@ public class ActivityEventBus implements Application.ActivityLifecycleCallbacks 
 
 
     public void addEvent(String activityClassName, IEventData iEventData) {
-        eventMap.put(activityClassName, iEventData);
+        if (eventMap.get(activityClassName) == null) {
+            ArrayList<IEventData> arrayList = new ArrayList<IEventData>();
+            arrayList.add(iEventData);
+            eventMap.put(activityClassName, arrayList);
+        } else {
+            eventMap.get(activityClassName).add(iEventData);
+        }
+
     }
 
     public void removeEvent(String activityClassName) {
